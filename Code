@@ -214,3 +214,301 @@ else
     echo "File '$file' does NOT exist."
     exit 1
 fi
+
+7a. Shell script to print the multiplication table of a given number.
+
+#!/bin/bash
+
+# Check if the user provided exactly one argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <number>"
+    exit 1
+fi
+
+num=$1
+
+# Validate that input is a number (integer)
+if ! [[ "$num" =~ ^-?[0-9]+$ ]]; then
+    echo "Error: '$num' is not a valid integer."
+    exit 1
+fi
+
+echo "Multiplication Table for $num:"
+for i in {1..10}
+do
+    result=$((num * i))
+    echo "$num x $i = $result"
+done
+
+7b.  Shell script to find the factorial of a number using while loop.
+
+#!/bin/bash
+
+# Check if exactly one argument is passed
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <non-negative-integer>"
+    exit 1
+fi
+
+num=$1
+
+# Validate input (non-negative integer)
+if ! [[ "$num" =~ ^[0-9]+$ ]]; then
+    echo "Error: '$num' is not a non-negative integer."
+    exit 1
+fi
+
+factorial=1
+counter=1
+
+while [ $counter -le $num ]
+do
+    factorial=$((factorial * counter))
+    ((counter++))
+done
+
+echo "Factorial of $num is: $factorial"
+
+8a. shell script to perform basic arithmetic operations using case.
+
+#!/bin/bash
+
+# Prompt for first number
+read -p "Enter first number: " a
+
+# Prompt for second number
+read -p "Enter second number: " b
+
+# Prompt for operation
+echo "Choose operation:"
+echo "+ for Addition"
+echo "- for Subtraction"
+echo "* for Multiplication"
+echo "/ for Division"
+echo "% for Modulus"
+read -p "Enter operation: " op
+
+# Perform operation using case
+case $op in
+  +)
+    result=$((a + b))
+    echo "Result: $a + $b = $result"
+    ;;
+  -)
+    result=$((a - b))
+    echo "Result: $a - $b = $result"
+    ;;
+  \*)
+    result=$((a * b))
+    echo "Result: $a * $b = $result"
+    ;;
+  /)
+    if [ "$b" -eq 0 ]; then
+      echo "Error: Division by zero"
+    else
+      result=$((a / b))
+      echo "Result: $a / $b = $result"
+    fi
+    ;;
+  %)
+    if [ "$b" -eq 0 ]; then
+      echo "Error: Modulus by zero"
+    else
+      result=$((a % b))
+      echo "Result: $a % $b = $result"
+    fi
+    ;;
+  *)
+    echo "Invalid operation"
+    ;;
+Esac
+
+
+8b. Shell script for a menu-driven program to list files, view current directory and exit
+
+#!/bin/bash
+
+while true
+do
+  echo "------------------------"
+  echo "   MENU"
+  echo "------------------------"
+  echo "1. List files"
+  echo "2. Show current directory"
+  echo "3. Exit"
+  echo "------------------------"
+
+  read -p "Enter your choice [1-3]: " choice
+
+  case $choice in
+    1)
+      echo "Files in current directory:"
+      ls -l
+      ;;
+    2)
+      echo "Current directory is:"
+      pwd
+      ;;
+    3)
+      echo "Exiting..."
+      break
+      ;;
+    *)
+      echo "Invalid choice. Please enter 1, 2, or 3."
+      ;;
+  esac
+
+  echo ""  # Blank line for better readability
+done
+
+
+9a. Shell script to check whether a string is a palindrome .
+
+#!/bin/bash
+
+read -p "Enter a string: " str
+
+# Remove spaces and convert to lowercase for a case-insensitive check (optional)
+clean_str=$(echo "$str" | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+
+# Reverse the string
+rev_str=$(echo "$clean_str" | rev)
+
+# Check if palindrome
+if [ "$clean_str" == "$rev_str" ]; then
+  echo "\"$str\" is a palindrome."
+else
+  echo "\"$str\" is not a palindrome."
+fi
+
+9b. Shell script count number of lines, words and characters of a file.
+#!/bin/bash
+
+read -p "Enter filename: " filename
+
+# Check if file exists
+if [ ! -f "$filename" ]; then
+  echo "File not found!"
+  exit 1
+fi
+
+# Use wc command to get lines, words, and characters
+lines=$(wc -l < "$filename")
+words=$(wc -w < "$filename")
+chars=$(wc -m < "$filename")
+
+echo "File: $filename"
+echo "Lines: $lines"
+echo "Words: $words"
+echo "Characters: $chars"
+
+10a. Write a shell script to validate E-mail using regular expression.
+
+read -p "Enter email: " email
+
+regex="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+
+if [[ $email =~ $regex ]]; then
+    echo "Valid email"
+else
+    echo "Invalid email"
+fi
+
+10b. Write a shell script to check password strength.
+
+read -sp "Enter password: " pass
+
+if [[ ${#pass} -lt 8 ]]; then 
+echo "Weak: minimum 8 chars"; exit;
+ fi
+if ! [[ $pass =~ [A-Z] ]]; then
+ echo "Weak: add uppercase"; exit; 
+fi
+if ! [[ $pass =~ [0-9] ]]; then 
+echo "Weak: add digits"; exit;
+ fi
+if ! [[ $pass =~ [\!\@\#\$\%\^\&\*] ]]; then 
+echo "Weak: add special char"; exit; 
+fi
+
+echo "Strong password!"
+
+11a. Shell script to extract usernames from /etc/passwd using grep
+
+#!/bin/bash
+
+# Extract usernames (first field before ':') from /etc/passwd
+grep -o '^[^:]+' /etc/passwd
+
+11b. Shell script to remove duplicate linesfrom a file using sort and uniq
+
+#!/bin/bash
+
+read -p "Enter filename: " filename
+
+# Check if file exists
+if [ ! -f "$filename" ]; then
+  echo "File not found!"
+  exit 1
+fi
+
+# Sort the file and remove duplicates, then save output to a new file
+sort "$filename" | uniq > temp_file && mv temp_file "$filename"
+
+echo "Duplicate lines removed from $filename."
+
+12a. write a shell script that accepts one or more filenames as argument and convert all of them to uppercase, provided they exist in current directory.
+
+#!/bin/bash
+
+# Check if at least one filename is provided
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 filename1 [filename2 ...]"
+  exit 1
+fi
+
+for file in "$@"
+do
+  if [ -f "$file" ]; then
+    # Convert file contents to uppercase and overwrite the file
+    tr '[:lower:]' '[:upper:]' < "$file" > temp_file && mv temp_file "$file"
+    echo "Converted '$file' to uppercase."
+  else
+    echo "File '$file' does not exist in the current directory."
+  fi
+done
+
+
+12b. Write a shell script that displays all the links of a file specified as a argument , which is optional, can be used to specify in which the search is to begin. if this second argument is not present, the search is to begin in current working directory, in either case, the starting directory as well as all its sub directories at all levels must be searched. the script need not include any error checking.
+
+#!/bin/bash
+
+# Assign arguments to variables
+filename="$1"
+start_dir="${2:-.}"   # If second argument not provided, default to current directory (.)
+
+# Find all files in start_dir (recursive) that are links pointing to the given filename
+
+# Use find to look for symbolic links
+echo "Symbolic links to '$filename' under '$start_dir':"
+find "$start_dir" -type l -lname "*$filename"
+
+echo ""
+# Use find to look for hard links by matching inode numbers
+
+# Get inode of the target file (if file exists)
+inode=$(ls -i "$filename" 2>/dev/null | awk '{print $1}')
+
+if [ -n "$inode" ]; then
+  echo "Hard links to '$filename' under '$start_dir':"
+  find "$start_dir" -inum "$inode"
+else
+  echo "File '$filename' not found to check for hard links."
+fi
+
+
+
+
+
+
+
